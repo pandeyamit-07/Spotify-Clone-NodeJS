@@ -1,0 +1,72 @@
+<% if(!isAjaxRequest) { %>
+<%- include('templates/header') %>
+<% } %>
+<div class="entityInfo">
+    <div class="leftSection">
+        <div class="img-container playlistImage">
+            <img src="/images/icons/playlist.png" alt="">
+        </div>
+
+    </div>
+
+    <div class="rightSection">
+        <h2><%= data.playListName %></h2>
+        <p>By <%= data.playListUser %></p>
+        <p><%= data.songsCount %> Songs</p>
+        <button class="button" onclick="deletePlaylist('<%= playlistId %>')">DELETE PLAYLIST</button>
+    </div>
+</div>
+
+<div class="trackListContainer">
+    <ul class="trackList">
+        <% let i = 1; %>
+        <% let songIDS = []; //Store Song ID's in an array for templplaylist array %>
+        <% data.songsList.forEach( song => { %>
+        <li class="trackListRow">
+            <% songIDS.push(song.id); //Push Song ID's in an array  %>
+            <div class="trackCount">
+                <img src="/images/icons/play-white.png" class="play" alt="Play Song"
+                    onclick="setTrack('<%= song.id %>', tempPlaylist, true)">
+                <span class="trackNumber"><%= i %></span>
+            </div>
+
+            <div class="trackInfo">
+                <span class="trackName"><%= song.title %></span>
+                <span class="artistName"><%= song.artistName %></span>
+            </div>
+
+            <div class="trackOptions">
+                <input type="hidden" class="songId" value="<%= song.id %>">
+                <img src="/images/icons/more.png" class="optionsBtn" alt="More Options" onclick="showOptionsMenu(this)">
+            </div>
+
+            <div class="trackDuration">
+                <span class="duration"><%= song.duration %></span>
+            </div>
+
+        </li>
+        <% i++; %>
+        <% }); %>
+
+
+        <script>
+            tempPlaylist = JSON.parse('<%- JSON.stringify(songIDS) %>'); //Store Current Album Song IDS into tempPlaylist JS variable
+        </script>
+    </ul>
+</div>
+
+<nav class="optionsMenu">
+    <input type="hidden" class="songId" id="songId">
+    <select class="item playlist">
+        <option value="">Add to playlist</option>
+        <% userPlaylist.forEach(playlist => { %>
+        <option value="<%= playlist.id %>"><%= playlist.name%></option>
+        <% }); %>
+
+    </select>
+    <div class="item" onclick="removeFromPlaylist(this, '<%= playlistId %>')">Remove from playlist</div>
+</nav>
+
+<% if(!isAjaxRequest) { %>
+<%- include('templates/footer') %>
+<% } %>
